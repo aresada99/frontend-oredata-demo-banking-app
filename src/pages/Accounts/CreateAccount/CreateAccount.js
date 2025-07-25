@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios";
 import styles from "./CreateAccount.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { createAccount } from "../../../thunks/accountThunk";
+import {ArrowLeftIcon} from "@heroicons/react/24/solid";
 
 const CreateAccount = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [balance, setBalance] = useState("");
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+
+    const { loading } = useSelector((state) => state.accounts);
+
+    useEffect(() => {
+        document.title = "OreBank - Create Account";
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,25 +33,33 @@ const CreateAccount = () => {
         }
 
         try {
-            setLoading(true);
-            await api.post("/accounts", {
-                name: name.trim(),
-                balance: balance.toString(),
-            });
-            setLoading(false);
-            navigate("/dashboard/accounts");
-        } catch (err) {
-            setLoading(false);
-            if (err.response && err.response.data && err.response.data.message) {
-                setError(err.response.data.message);
+            const resultAction = await dispatch(
+                createAccount({
+                    name: name.trim(),
+                    balance: parseFloat(balance),
+                })
+            );
+
+            if (createAccount.fulfilled.match(resultAction)) {
+                navigate("/dashboard/accounts");
             } else {
-                setError("An error occurred while creating account.");
+                setError(resultAction.payload || "An error occurred while creating account.");
             }
+        } catch (err) {
+            setError("An unexpected error occurred.");
         }
+    };
+
+    const handleBack = () => {
+        navigate('/dashboard/accounts');
     };
 
     return (
         <div className={styles.container}>
+            <button onClick={handleBack} className={styles.backButton}>
+                <ArrowLeftIcon className={styles.backIcon} />
+                Back to Accounts
+            </button>
             <h2 className={styles.title}>Create New Account</h2>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <label className={styles.label}>

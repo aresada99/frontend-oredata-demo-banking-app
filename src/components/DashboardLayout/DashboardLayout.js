@@ -1,12 +1,16 @@
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { logout } from "../features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../features/auth/authSlice";
 import styles from "./DashboardLayout.module.css";
+import {UserCircleIcon} from "@heroicons/react/16/solid";
+import Footer from "../Footer/Footer";
 
 const DashboardLayout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const user = useSelector((state) => state.auth.user);
 
     const handleLogout = () => {
         dispatch(logout());
@@ -16,6 +20,8 @@ const DashboardLayout = () => {
     return (
         <div>
             <nav className={styles.navbar}>
+                <div className={styles.brand}>OreBank</div>
+
                 <div className={styles.navLinks}>
                     <NavLink
                         to="/dashboard/home"
@@ -23,7 +29,7 @@ const DashboardLayout = () => {
                             isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink
                         }
                     >
-                        Ana Sayfa
+                        Home
                     </NavLink>
                     <NavLink
                         to="/dashboard/accounts"
@@ -31,7 +37,7 @@ const DashboardLayout = () => {
                             isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink
                         }
                     >
-                        Hesaplar
+                        Accounts
                     </NavLink>
                     <NavLink
                         to="/dashboard/transfer"
@@ -39,17 +45,25 @@ const DashboardLayout = () => {
                             isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink
                         }
                     >
-                        Havale
+                        Transfer
                     </NavLink>
                 </div>
-                <button onClick={handleLogout} className={styles.logoutButton}>
-                    Çıkış Yap
-                </button>
+
+                <div className={styles.userSection}>
+                    <div className={styles.usernameAndLogo}>
+                    <UserCircleIcon className={styles.userIcon} />
+                    {user?.username && <span className={styles.username}>{user.username}</span>}
+                    </div>
+                    <button onClick={handleLogout} className={styles.logoutButton}>
+                        Logout
+                    </button>
+                </div>
             </nav>
 
             <main className={styles.main}>
                 <Outlet />
             </main>
+            <Footer />
         </div>
     );
 };

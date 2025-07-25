@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../../api/axios";
 import styles from "./AccountDetails.module.css";
-import {ArrowLeftIcon} from '@heroicons/react/24/solid';
+import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import { deleteAccount, fetchAccount, updateAccount } from "../../../thunks/accountThunk";
+import { useDispatch } from 'react-redux';
+import ConfirmModal from "../../../components/ConfirmModal/ConfirmModal";
 
 const AccountDetails = () => {
+    const dispatch = useDispatch();
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -15,61 +18,77 @@ const AccountDetails = () => {
     const [editMode, setEditMode] = useState(false);
     const [name, setName] = useState("");
 
+    const [showConfirm, setShowConfirm] = useState(false);
+
     useEffect(() => {
-        const fetchAccount = async () => {
-            setLoading(true);
-            setError("");
-            try {
-                const response = await api.get(`/accounts/${id}`);
-                const acc = response.data.data;
+        document.title = "OreBank - Account Details";
+    }, []);
+
+    useEffect(() => {
+        setLoading(true);
+        setError("");
+        dispatch(fetchAccount(id))
+            .unwrap()
+            .then((acc) => {
                 setAccount(acc);
                 setName(acc.name);
-            } catch (err) {
-                setError("Hesap bulunamadı veya bir hata oluştu.");
-            } finally {
+            })
+            .catch((err) => {
+                setError(err);
+            })
+            .finally(() => {
                 setLoading(false);
-            }
-        };
-        fetchAccount();
-    }, [id]);
+            });
+    }, [dispatch, id]);
 
-    const handleEdit = () => {
-        setEditMode(true);
+    const handleEdit = () => setEditMode(true);
+
+    const handleSave = () => {
+        if (!name.trim()) return;
+        setLoading(true);
+        setError("");
+        dispatch(updateAccount({ id, name }))
+            .unwrap()
+            .then((updatedAccount) => {
+                setAccount(updatedAccount);
+                setEditMode(false);
+            })
+            .catch((err) => {
+                setError(err);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
-    const handleSave = async () => {
-        if (!name.trim()) {
-            setError("Hesap adı boş olamaz.");
-            return;
-        }
-        try {
-            setError("");
-            const response = await api.put(`/accounts/${id}`, { name });
-            setAccount(response.data.data);
-            setEditMode(false);
-        } catch (err) {
-            setError("Güncelleme sırasında hata oluştu.");
-        }
+    const handleDeleteClick = () => {
+        setShowConfirm(true);
     };
 
-    const handleDelete = async () => {
-        if (window.confirm("Bu hesabı silmek istediğinize emin misiniz?")) {
-            try {
-                await api.delete(`/accounts/${id}`);
+    const handleConfirm = () => {
+        setShowConfirm(false);
+        dispatch(deleteAccount(id))
+            .unwrap()
+            .then(() => {
                 navigate("/dashboard/accounts");
-            } catch (err) {
-                setError("Silme işlemi sırasında hata oluştu.");
-            }
-        }
+            })
+            .catch((err) => {
+                setError(err);
+                setLoading(false);
+            });
+    };
+
+    const handleCancel = () => {
+        setShowConfirm(false);
     };
 
     const handleBack = () => {
         navigate('/dashboard/accounts');
     };
 
-    if (loading) return <p>Yükleniyor...</p>;
+    if (loading) return <p>Loading...</p>;
     if (error) return <p className={styles.error}>{error}</p>;
-    if (!account) return <p>Hesap bulunamadı.</p>;
+    if (!account) return <p>Account not found.</p>;
 
     return (
         <div className={styles.container}>
@@ -77,15 +96,15 @@ const AccountDetails = () => {
                 <ArrowLeftIcon className={styles.backIcon} />
                 Back to Accounts
             </button>
-            <h2 className={styles.title}>Hesap Detayları</h2>
+            <h2 className={styles.title}>Account Details</h2>
 
             <div className={styles.section}>
-                <label className={styles.label}>Hesap Numarası:</label>
+                <label className={styles.label}>Account Number</label>
                 <div className={styles.value}>{account.number}</div>
             </div>
 
             <div className={styles.section}>
-                <label className={styles.label}>Bakiye:</label>
+                <label className={styles.label}>Balance</label>
                 <div className={styles.value}>
                     {account.balance.toLocaleString("tr-TR", {
                         style: "currency",
@@ -95,7 +114,7 @@ const AccountDetails = () => {
             </div>
 
             <div className={styles.section}>
-                <label className={styles.label}>Hesap Adı:</label>
+                <label className={styles.label}>Account Name</label>
                 {editMode ? (
                     <input
                         className={styles.input}
@@ -109,16 +128,16 @@ const AccountDetails = () => {
             </div>
 
             {!editMode ? (
-                <button className={`${styles.button} ${styles.editButton}`} onClick={handleEdit}>
-                    Düzenle
+                <button title="Enables update mode" className={`${styles.button} ${styles.editButton}`} onClick={handleEdit}>
+                    Update Account
                 </button>
             ) : (
                 <div className={styles.buttonGroup}>
                     <button className={`${styles.button} ${styles.saveButton}`} onClick={handleSave}>
-                        Kaydet
+                        Save
                     </button>
-                    <button className={`${styles.button} ${styles.deleteButton}`} onClick={handleDelete}>
-                        Sil
+                    <button className={`${styles.button} ${styles.deleteButton}`} onClick={handleDeleteClick}>
+                        Delete Account
                     </button>
                     <button
                         className={`${styles.button} ${styles.cancelButton}`}
@@ -128,11 +147,17 @@ const AccountDetails = () => {
                             setError("");
                         }}
                     >
-                        İptal
+                        Cancel
                     </button>
                 </div>
             )}
-
+            {showConfirm && (
+                <ConfirmModal
+                    message="Are you sure you want to delete this account? This action cannot be undone."
+                    onConfirm={handleConfirm}
+                    onCancel={handleCancel}
+                />
+            )}
             {error && <p className={styles.error}>{error}</p>}
         </div>
     );

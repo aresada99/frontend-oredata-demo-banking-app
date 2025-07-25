@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAccounts } from '../../slices/accountSlice';
+import { fetchAccounts } from '../../../thunks/accountThunk';
 import styles from './Accounts.module.css';
 import { useNavigate } from 'react-router-dom';
-import {DocumentMagnifyingGlassIcon} from "@heroicons/react/24/outline";
 
 const Accounts = () => {
     const dispatch = useDispatch();
@@ -13,6 +12,10 @@ const Accounts = () => {
     const [name, setName] = useState('');
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = "OreBank - Accounts";
+    }, []);
 
     useEffect(() => {
         dispatch(fetchAccounts({ number: '', name: '' }));
@@ -33,32 +36,36 @@ const Accounts = () => {
         navigate(`/dashboard/accounts/${account.id}`);
     };
 
+    const handleTransactionHistory = (account) => {
+        navigate(`/dashboard/transaction-history/${account.id}`);
+    };
+
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>Hesaplarım</h2>
+            <h2 className={styles.title}>My Accounts</h2>
             <form onSubmit={handleSearch} className={styles.form}>
                 <div className={styles.leftGroup}>
                     <input
                         type="text"
-                        placeholder="Hesap Numarası"
+                        placeholder="Account Number"
                         value={number}
                         onChange={(e) => setNumber(e.target.value)}
                         className={styles.input}
                     />
                     <input
                         type="text"
-                        placeholder="Hesap Adı"
+                        placeholder="Account Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className={styles.input}
                     />
-                    <button type="submit" className={styles.button}>Ara</button>
+                    <button type="submit" className={styles.button}>Search</button>
                     <button
                         type="button"
                         onClick={handleReset}
                         className={`${styles.button} ${styles.resetButton}`}
                     >
-                        Sıfırla
+                        Reset
                     </button>
                 </div>
 
@@ -68,21 +75,21 @@ const Accounts = () => {
                         className={styles.createButton}
                         onClick={() => navigate('/dashboard/accounts/new')}
                     >
-                        Hesap Oluştur
+                        Create New Account
                     </button>
                 </div>
             </form>
 
-            {loading && <p>Yükleniyor...</p>}
+            {loading && <p>Loading...</p>}
             {error && <p className={styles.error}>{error}</p>}
 
             <table className={styles.table}>
                 <thead className={styles.thead}>
                 <tr>
-                    <th className={styles.th}>Hesap Numarası</th>
-                    <th className={styles.th}>Hesap Adı</th>
-                    <th className={styles.th}>Bakiye</th>
-                    <th className={styles.th}>İşlem</th>
+                    <th className={styles.th}>Account Number</th>
+                    <th className={styles.th}>Account Name</th>
+                    <th className={styles.th}>Balance</th>
+                    <th className={styles.th}>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -103,6 +110,13 @@ const Accounts = () => {
                                 title="View Details"
                             >
                                 View Details
+                            </button>
+                            <button
+                                className={styles.transactionButton}
+                                onClick={() => handleTransactionHistory(acc)}
+                                title="View Transaction History"
+                            >
+                                Transaction History
                             </button>
                         </td>
                     </tr>

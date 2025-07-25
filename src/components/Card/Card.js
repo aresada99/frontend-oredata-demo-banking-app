@@ -1,34 +1,34 @@
 import { useNavigate } from "react-router-dom";
+import styles from "./Card.module.css";
+
+// Heroicons importları (outline versiyonları)
+import { BanknotesIcon, ArrowsRightLeftIcon, ClockIcon } from "@heroicons/react/24/outline";
+
+const iconMap = {
+    accounts: <BanknotesIcon className={styles.icon} />,
+    transfer: <ArrowsRightLeftIcon className={styles.icon} />,
+    history: <ClockIcon className={styles.icon} />
+};
 
 const Card = ({ title, description, route }) => {
     const navigate = useNavigate();
 
+    let icon = null;
+
+    if (title.toLowerCase().includes("account")) icon = iconMap.accounts;
+    else if (title.toLowerCase().includes("transfer")) icon = iconMap.transfer;
+    else if (title.toLowerCase().includes("history")) icon = iconMap.history;
+
     return (
-        <div style={{
-            border: '1px solid #ccc',
-            borderRadius: '10px',
-            padding: '20px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            maxWidth: '300px',
-            margin: '1rem',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-        }}>
-            <h2 style={{ marginBottom: '10px' }}>{title}</h2>
-            <p style={{ marginBottom: '20px' }}>{description}</p>
-            <button
-                onClick={() => navigate(route)}
-                style={{
-                    backgroundColor: '#007bff',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    cursor: 'pointer'
-                }}
-            >
-                Git
+        <div className={styles.card}>
+            <div className={styles.iconWrapper}>
+                {icon}
+                <h2 className={styles.title}>{title}</h2>
+            </div>
+
+            <p className={styles.description}>{description}</p>
+            <button onClick={() => navigate(route)} className={styles.button}>
+                Go
             </button>
         </div>
     );

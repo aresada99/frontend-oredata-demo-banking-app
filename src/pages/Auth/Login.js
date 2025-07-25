@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useDispatch } from "react-redux";
-import {loginSuccess, setUser} from "../features/auth/authSlice";
-import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
+import { loginSuccess, setUser } from "../../features/auth/authSlice";
+import api from "../../api/axios";
+import { useNavigate, Link } from "react-router-dom";
+import styles from "./AuthForm.module.css";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -11,6 +12,10 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        document.title = "OreBank - Login";
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,39 +32,41 @@ const Login = () => {
 
             navigate("/dashboard/home");
         } catch (err) {
-            setError("Giriş başarısız. Lütfen kullanıcı adı ve şifrenizi kontrol edin.");
+            setError("Login failed. Please verify your username and password and try again.");
         }
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "3rem auto", padding: "1rem", border: "1px solid #ccc", borderRadius: "6px" }}>
-            <h2 style={{ textAlign: "center" }}>Giriş Yap</h2>
+        <div className={styles.container}>
+            <h1 className={styles.mainTitle}><span style={{color : "#004085"}}>Ore</span>Bank</h1>
+            <h2 className={styles.title}>Login</h2>
             <form onSubmit={handleSubmit}>
-                <label>
-                    Kullanıcı Adı
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Username</label>
                     <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        className={styles.input}
                         required
-                        style={{ width: "100%", padding: "8px", marginTop: "4px", marginBottom: "1rem" }}
                     />
-                </label>
-                <label>
-                    Şifre
+                </div>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Password</label>
                     <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        className={styles.input}
                         required
-                        style={{ width: "100%", padding: "8px", marginTop: "4px", marginBottom: "1rem" }}
                     />
-                </label>
-                <button type="submit" style={{ padding: "10px 15px", backgroundColor: "#0077cc", border: "none", color: "white", borderRadius: "4px", cursor: "pointer", width: "100%" }}>
-                    Giriş Yap
-                </button>
-                {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
+                </div>
+                <button type="submit" className={styles.button}>Login</button>
+                {error && <p className={styles.error}>{error}</p>}
             </form>
+            <div className={styles.switchLink}>
+                Don't have an account yet? <Link to="/register">Register</Link>
+            </div>
         </div>
     );
 };

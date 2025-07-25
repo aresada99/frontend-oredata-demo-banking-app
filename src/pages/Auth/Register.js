@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import React, {useEffect, useState} from "react";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../../api/axios";
+import styles from "./AuthForm.module.css";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -10,71 +11,67 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
+    useEffect(() => {
+        document.title = "OreBank - Register";
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
         try {
-            const response = await api.post("/users/register", { username, email, password });
-
-            // Başarılı ise login sayfasına yönlendir
+            await api.post("/users/register", { username, email, password });
             navigate("/login");
         } catch (err) {
-            setError("Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.");
-            console.error(err);
+            setError("Registration failed. Please verify your details and try again.");
+
         }
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "3rem auto", padding: "1rem", border: "1px solid #ccc", borderRadius: "6px" }}>
-            <h2 style={{ textAlign: "center" }}>Kayıt Ol</h2>
+        <div className={styles.container}>
+            <h1 className={styles.mainTitle}><span style={{color : "#004085"}}>Ore</span>Bank</h1>
+            <h2 className={styles.title}>Register</h2>
             <form onSubmit={handleSubmit}>
-                <label>
-                    Kullanıcı Adı
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Username</label>
                     <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        className={styles.input}
+                        placeholder="Username"
                         required
-                        style={{ width: "100%", padding: "8px", marginTop: "4px", marginBottom: "1rem" }}
                     />
-                </label>
-                <label>
-                    Email
+                </div>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Email</label>
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        className={styles.input}
+                        placeholder="yourmail@mail.com"
                         required
-                        style={{ width: "100%", padding: "8px", marginTop: "4px", marginBottom: "1rem" }}
                     />
-                </label>
-                <label>
-                    Şifre
+                </div>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Password</label>
                     <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        className={styles.input}
+                        placeholder="**************"
                         required
-                        style={{ width: "100%", padding: "8px", marginTop: "4px", marginBottom: "1rem" }}
                     />
-                </label>
-                <button
-                    type="submit"
-                    style={{
-                        padding: "10px 15px",
-                        backgroundColor: "#0077cc",
-                        border: "none",
-                        color: "white",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        width: "100%",
-                    }}
-                >
-                    Kayıt Ol
-                </button>
-                {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
+                </div>
+                <button type="submit" className={styles.button}>Register</button>
+                {error && <p className={styles.error}>{error}</p>}
             </form>
+            <div className={styles.switchLink}>
+                Already have an account? <Link to="/login">Login</Link>
+            </div>
         </div>
     );
 };
