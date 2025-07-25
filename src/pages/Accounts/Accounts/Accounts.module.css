@@ -1,0 +1,116 @@
+.container {
+    padding: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #004085;
+}
+
+.form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+}
+
+.leftGroup {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.rightGroup {
+    margin-left: auto;
+}
+
+.input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #005fa3;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.th,
+.td {
+    padding: 8px;
+    text-align: left;
+}
+
+.thead {
+    border-bottom: 2px solid #0077cc;
+}
+
+.tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.balance {
+    font-weight: bold;
+    color: #2a7f2e;
+}
+
+.error {
+    color: red;
+}
+
+.resetButton {
+    background-color: #888;
+    margin-left: 0.5rem;
+}
+
+.createButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.createButton:hover {
+    background-color: #45a049;
+}
+
+.editButton {
+    padding: 6px 12px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.editButton:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.editButton:active {
+    background-color: #1e40af;
+    transform: scale(0.98);
+}
