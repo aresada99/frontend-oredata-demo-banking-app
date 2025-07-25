@@ -6,8 +6,7 @@ import { BanknotesIcon, ArrowsRightLeftIcon, ClockIcon } from "@heroicons/react/
 
 const iconMap = {
     accounts: <BanknotesIcon className={styles.icon} />,
-    transfer: <ArrowsRightLeftIcon className={styles.icon} />,
-    history: <ClockIcon className={styles.icon} />
+    transfer: <ArrowsRightLeftIcon className={styles.icon} />
 };
 
 const Card = ({ title, description, route }) => {
@@ -17,7 +16,6 @@ const Card = ({ title, description, route }) => {
 
     if (title.toLowerCase().includes("account")) icon = iconMap.accounts;
     else if (title.toLowerCase().includes("transfer")) icon = iconMap.transfer;
-    else if (title.toLowerCase().includes("history")) icon = iconMap.history;
 
     return (
         <div className={styles.card}>

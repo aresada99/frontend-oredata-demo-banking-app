@@ -12,7 +12,7 @@ const Home = () => {
 
     return (
         <div>
-            <h1><span style={{color : "#004085"}}>Ore</span>Bank</h1>
+            <h1><span style={{color : "#2db2ea"}}>Ore</span>Bank</h1>
             <p>Welcome, {user ? user.username : "Guest"}</p>
 
             <div style={{display: "flex"}}>
