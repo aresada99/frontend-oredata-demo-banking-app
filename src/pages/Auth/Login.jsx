@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess, setUser } from "../../features/auth/authSlice";
-import api from "../../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "./AuthForm.module.css";
+import {loginUser} from "../../thunks/authThunk";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -22,17 +22,18 @@ const Login = () => {
         setError("");
 
         try {
-            const response = await api.post("/users/login", { username, password });
-            dispatch(loginSuccess(response.data.data.token));
+            const data = await dispatch(loginUser({ username, password })).unwrap();
+
+            dispatch(loginSuccess(data.token));
             dispatch(setUser({
-                email: response.data.data.email,
-                id: response.data.data.id,
-                username: response.data.data.username
+                email: data.email,
+                id: data.id,
+                username: data.username
             }));
 
             navigate("/dashboard/home");
         } catch (err) {
-            setError("Login failed. Please verify your username and password and try again.");
+            setError(err);
         }
     };
 

@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../../api/axios";
 import styles from "./AuthForm.module.css";
+import {registerUser} from "../../thunks/authThunk";
+import {useDispatch} from "react-redux";
 
 const Register = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -19,14 +21,20 @@ const Register = () => {
         e.preventDefault();
         setError("");
 
+        const passwordRegex = /^(?=.*\d).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            setError("Password must be at least 8 characters long and contain at least one number.");
+            return;
+        }
+
         try {
-            await api.post("/users/register", { username, email, password });
+            const result = await dispatch(registerUser({ username, email, password })).unwrap();
             navigate("/login");
         } catch (err) {
-            setError("Registration failed. Please verify your details and try again.");
-
+            setError(err);
         }
     };
+
 
     return (
         <div className="pageWrapper">
