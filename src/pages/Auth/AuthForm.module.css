@@ -1,5 +1,5 @@
 .container {
-    max-width: 400px;
+    width: 400px;
     margin: 3rem auto;
     border: 1px solid #ddd;
     background-color: #fff;
@@ -79,3 +79,14 @@
 .switchLink a:hover {
     text-decoration: underline;
 }
+
+.pageWrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 2rem;
+}
+
+

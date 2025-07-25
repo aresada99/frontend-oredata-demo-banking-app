@@ -29,6 +29,7 @@ const Register = () => {
     };
 
     return (
+        <div className="pageWrapper">
         <div className={styles.container}>
             <h1 className={styles.mainTitle}><span style={{color : "#004085"}}>Ore</span>Bank</h1>
             <h2 className={styles.title}>Register</h2>
@@ -72,6 +73,7 @@ const Register = () => {
             <div className={styles.switchLink}>
                 Already have an account? <Link to="/login">Login</Link>
             </div>
+        </div>
         </div>
     );
 };

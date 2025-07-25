@@ -37,6 +37,7 @@ const Login = () => {
     };
 
     return (
+        <div className="pageWrapper">
         <div className={styles.container}>
             <h1 className={styles.mainTitle}><span style={{color : "#004085"}}>Ore</span>Bank</h1>
             <h2 className={styles.title}>Login</h2>
@@ -67,6 +68,7 @@ const Login = () => {
             <div className={styles.switchLink}>
                 Don't have an account yet? <Link to="/register">Register</Link>
             </div>
+        </div>
         </div>
     );
 };
