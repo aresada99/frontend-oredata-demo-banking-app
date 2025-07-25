@@ -39,7 +39,7 @@ const Login = () => {
     return (
         <div className="pageWrapper">
         <div className={styles.container}>
-            <h1 className={styles.mainTitle}><span style={{color : "#004085"}}>Ore</span>Bank</h1>
+            <h1 className={styles.mainTitle}><span style={{color : "#2db2ea"}}>Ore</span>Bank</h1>
             <h2 className={styles.title}>Login</h2>
             <form onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
